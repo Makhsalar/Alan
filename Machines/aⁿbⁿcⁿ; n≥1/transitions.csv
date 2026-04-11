@@ -1,0 +1,17 @@
+q0,a,x,R,q1
+q0,y,y,R,q4
+q1,y,y,R,q1
+q1,a,a,R,q1
+q1,b,y,R,q2
+q2,b,b,R,q2
+q2,z,z,R,q2
+q2,c,z,L,q3
+q3,x,x,R,q0
+q3,a,a,L,q3
+q3,y,y,L,q3
+q3,b,b,L,q3
+q3,z,z,L,q3
+q4,y,y,R,q4
+q4,z,z,R,q5
+q5,z,z,R,q5
+q5,∅,∅,L,q6
