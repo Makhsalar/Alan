@@ -26,6 +26,7 @@ class Turing:
         self.alphabet = []
         self.gamma = []
         self.tape = []
+        self.allowed_moves = ['R', 'L']
         self.states = dict()
         self.head = 0
         self.start_state = self.Node()
@@ -90,13 +91,10 @@ class Turing:
         return True
 
     def check_integrity_of_edges(self, edges):
-        r = []
-        w = []
-        m = []
-        for edge in edges:
-            r.append(edge['read'])
-            w.append(edge['write'])
-            m.append(edge['move'])
+        r = [edge['read'] for edge in edges]
+        w = [edge['write'] for edge in edges]
+        m = [edge['move'] for edge in edges]
+        
         for item in r:
             if item not in self.gamma:
                 print(f'{item} (read char) not available in Γ')
@@ -106,7 +104,7 @@ class Turing:
                 print(f'{item} (read char) not available in Γ')
                 self.halt()
         for item in m:
-            if item not in ['R', 'L']:
+            if item not in self.allowed_moves:
                 print(f'{item} not available in move set of tape')
                 self.halt()
         return len(r) == len(set(r))
@@ -122,12 +120,13 @@ class Turing:
         exit()
         
     def apply_move(self, move):
-        if move == 'R':
-            return 1
-        elif move == 'L':
-            return -1
-        else:
-            self.halt()
+        match move:
+            case 'R':
+                return 1
+            case 'L':
+                return -1
+            case _:
+                return 0
 
     def process_input(self):
         if self.input_string:
@@ -168,3 +167,8 @@ class Turing:
 
     def __str__(self):
         return self.name
+
+class Stay_Turing(Turing):
+    def __init__(self):
+        super().__init__()
+        self.allowed_moves = ['R', 'L', 'S']

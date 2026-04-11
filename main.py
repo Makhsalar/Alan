@@ -1,6 +1,6 @@
-from Turing import *
+from Turing import Turing, Stay_Turing
 
-if __name__ == '___main__':
+if __name__ == '__main__':
     machine = Turing()
     machine.fetch_data()
     machine.fetch_transitions()
