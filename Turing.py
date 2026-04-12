@@ -154,7 +154,8 @@ class Turing:
         window_size=5,
         speed=0.7,
         tape_color=Colors.CYAN,
-        head_color=Colors.YELLOW
+        head_color=Colors.YELLOW,
+        head_centered = True,
     ):
         if not data_list:
             print(f"{Colors.YELLOW}The list is empty!{Colors.RESET}")
@@ -168,16 +169,23 @@ class Turing:
         visible_elements = []
         total_window_length = (2 * window_size) + 1
 
-        for i in range(total_window_length):
-            current_offset = i - window_size
-            actual_data_index = (normalized_head_index + current_offset) % num_elements
-            visible_elements.append(data_list[actual_data_index])
-        
-        local_head_index = window_size
+        if head_centered:
+            for i in range(total_window_length):
+                current_offset = i - window_size
+                actual_data_index = (normalized_head_index + current_offset) % num_elements
+                visible_elements.append(data_list[actual_data_index])
+            
+            local_head_index = window_size
+        else:
+            for i in range(total_window_length):
+                actual_data_index = (normalized_head_index + i) % num_elements
+                visible_elements.append(data_list[actual_data_index])
+            local_head_index = 0
+
         total_segment_width = len(visible_elements) * 5 + 1
         print(f"{tape_color}╭{'─' * total_segment_width}╮{Colors.RESET}")
 
-        tape_line = f"{tape_color}│{Colors.RESET}"
+        tape_line = f"{tape_color}│"
         pointer_line = " "
 
         for i, item in enumerate(visible_elements):
@@ -185,10 +193,10 @@ class Turing:
             block_width = 5
 
             if i == local_head_index:
-                tape_line += f"{head_color}{Colors.BOLD} {formatted_item} {Colors.RESET}{tape_color}"
+                tape_line += f"{tape_color}{head_color}{Colors.BOLD} {formatted_item} {Colors.RESET}{tape_color}"
                 pointer_line += f"{' ' * ((block_width - 1) // 2)}{head_color}▲{Colors.RESET}{' ' * ((block_width - 1) // 2)}"
             else:
-                tape_line += f" {formatted_item} {tape_color}"
+                tape_line += f"{tape_color} {formatted_item} "
                 pointer_line += " " * block_width
                 
         tape_line += f"│{Colors.RESET}"
@@ -240,3 +248,15 @@ class Semi_Infinite_Turing(Turing):
                 return -1
             case _:
                 return 0
+            
+    def visualize_tape(
+            self,
+            data_list,
+            head_index,
+            window_size=5,
+            speed=0.7,
+            tape_color=Colors.CYAN,
+            head_color=Colors.YELLOW,
+            head_centered = False,
+    ):
+        return super().visualize_tape(data_list, head_index, window_size, speed, tape_color, head_color, head_centered)
