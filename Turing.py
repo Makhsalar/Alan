@@ -108,7 +108,7 @@ class Turing:
                 self.halt()
         for item in w:
             if item not in self.gamma:
-                print(f'{item} (read char) not available in Γ')
+                print(f'{item} (write char) not available in Γ')
                 self.halt()
         for item in m:
             if item not in self.allowed_moves:
@@ -134,6 +134,18 @@ class Turing:
                 return -1
             case _:
                 return 0
+            
+    def apply_transition(self, edges, head, matched):
+        for edge in edges:
+            if self.tape[head] == edge['read']:
+                self.step_counter += 1
+                matched = True
+                self.tape[head] = edge['write']
+                self.head += self.apply_move(edge['move'])
+                self.current_state = self.states[edge['destination_node']]
+                break
+        if not matched:
+            self.halt()
             
     def visualize_tape(
         self,
@@ -162,9 +174,7 @@ class Turing:
             visible_elements.append(data_list[actual_data_index])
         
         local_head_index = window_size
-
         total_segment_width = len(visible_elements) * 5 + 1
-
         print(f"{tape_color}╭{'─' * total_segment_width}╮{Colors.RESET}")
 
         tape_line = f"{tape_color}│{Colors.RESET}"
@@ -183,10 +193,8 @@ class Turing:
                 
         tape_line += f"│{Colors.RESET}"
         print(tape_line)
-
         print(f"{tape_color}╰{'─' * total_segment_width}╯{Colors.RESET}")
         print(pointer_line)
-
         print(f"{Colors.BOLD}{Colors.WHITE}----------------------------------------{Colors.RESET}")
         print(f"Current Head: {head_color}{Colors.BOLD}{data_list[normalized_head_index]}{Colors.RESET} at index {normalized_head_index}\n")
         sleep(speed)
@@ -202,30 +210,12 @@ class Turing:
                 if self.current_state not in checked_nodes:
                     if self.check_integrity_of_edges(edges):
                         checked_nodes.add(self.current_state)
-                        for edge in edges:
-                            if self.tape[head] == edge['read']:
-                                self.step_counter += 1
-                                matched = True
-                                self.tape[head] = edge['write']
-                                self.head += self.apply_move(edge['move'])
-                                self.current_state = self.states[edge['destination_node']]
-                                break
-                        if not matched:
-                            self.halt()
+                        self.apply_transition(edges, head, matched)
                     else:
                         print(f'Invalid edges on {self.current_state}')
                         self.halt()
                 else:
-                    for edge in edges:
-                        self.step_counter += 1
-                        if self.tape[head] == edge['read']:
-                            matched = True
-                            self.tape[head] = edge['write']
-                            self.head += self.apply_move(edge['move'])
-                            self.current_state = self.states[edge['destination_node']]
-                            break
-                    if not matched:
-                        self.halt()
+                    self.apply_transition(edges, head, matched)
             self.halt()  
 
     def __str__(self):
