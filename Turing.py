@@ -104,15 +104,15 @@ class Turing:
         
         for item in r:
             if item not in self.gamma:
-                print(f'{item} (read char) not available in Γ')
+                print(f'{item} (read char) is not available in Γ')
                 self.halt()
         for item in w:
             if item not in self.gamma:
-                print(f'{item} (write char) not available in Γ')
+                print(f'{item} (write char) is not available in Γ')
                 self.halt()
         for item in m:
             if item not in self.allowed_moves:
-                print(f'{item} not available in move set of tape')
+                print(f'{item} is not available in move set of tape')
                 self.halt()
         return len(r) == len(set(r))
 
@@ -224,4 +224,19 @@ class Turing:
 class Stay_Turing(Turing):
     def __init__(self, tape_size, speed, tolerance):
         super().__init__(tape_size, speed, tolerance)
-        self.allowed_moves = ['R', 'L', 'S']
+        self.allowed_moves.append('S')
+
+class Semi_Infinite_Turing(Turing):
+    def __init__(self, tape_size, speed, tolerance):
+        super().__init__(tape_size, speed, tolerance)
+    
+    def apply_move(self, move):
+        match move:
+            case 'R':
+                return 1
+            case 'L':
+                if self.head <= 0:
+                    return 0
+                return -1
+            case _:
+                return 0
