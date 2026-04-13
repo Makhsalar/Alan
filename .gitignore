@@ -37,8 +37,9 @@ htmlcov/
 .idea/
 *.swp
 
-# --- CSV files ---
+# --- Data files ---
 *.csv
+*.pdf
 
 # --- Misc ---
 .DS_Store
