@@ -1,4 +1,4 @@
-from Standard import Turing
+from src.Standard import Turing
 
 class Multi_Dimension_Turing(Turing):
     def __init__(self, speed, tolerance):

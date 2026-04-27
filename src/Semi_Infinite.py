@@ -1,5 +1,4 @@
-from Standard import Turing
-from src.Terminal import Colors
+from src.Standard import Turing
 
 class Semi_Infinite_Turing(Turing):
     def __init__(self, speed, tolerance):
