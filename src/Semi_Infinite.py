@@ -4,6 +4,7 @@ from src.Terminal import Colors
 class Semi_Infinite_Turing(Turing):
     def __init__(self, speed, tolerance):
         super().__init__(speed, tolerance)
+        self.type = 'SINF'
     
     def apply_move(self, move):
         match move:

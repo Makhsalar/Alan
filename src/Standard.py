@@ -32,6 +32,17 @@ class Turing:
         self.step_counter = 0
         self.tolerance = tolerance
         self.speed = speed
+        self.type = 'STD'
+
+    def get_machine_type(self):
+        with open('data.csv', 'r') as f:
+            reader = csv.reader(f)
+            for i, line in enumerate(reader):
+                if i == 1:
+                    if len(line) > 2 and line[2].strip():
+                        self.type = line[2].strip()
+                    else:
+                        self.type = 'STD'
 
     def fetch_data(self):
         with open('data.csv', 'r') as DATA:
@@ -53,8 +64,6 @@ class Turing:
                     self.states[self.start_state.name] = self.start_state
                     self.states[self.final_state.name] = self.final_state
                     self.current_state = self.start_state
-
-            DATA.close()
 
     def fetch_transitions(self):
         with open('transitions.csv', 'r') as TTABLE:
@@ -82,8 +91,6 @@ class Turing:
                             }
                     if edge not in self.states[source_node].edges:
                         self.states[source_node].edges.append(edge)
-
-            TTABLE.close()
 
     def halt(self):
         if self.current_state == self.final_state:
