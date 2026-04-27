@@ -17,7 +17,7 @@ This file stores general machine information.
 - `name` — The machine’s name  
 - `input_string` — The input given to the machine  
 - `a-b` — Machine’s alphabet without blank  
-- `a-b-∅` — Machine’s alphabet including blank  
+- `a-b-_` — Machine’s alphabet including blank  
 - `start_state` — Initial state  
 - `final_state` — Accepting/halting state  
 

@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 class Tape:
-    def __init__(self, blank='∅'):
+    def __init__(self, blank='_'): # ∅
         self.blank = blank
         self.tape = defaultdict(lambda: blank)
         self.position = 0
@@ -26,9 +26,9 @@ class Tape:
             low, high = 0, 0
 
         cells = []
-        for i in range(low, high + 1):
-            if i == self.position:
-                cells.append(f'|[{self.tape[i]}]|')
+        for cell in range(low, high + 1):
+            if cell == self.position:
+                cells.append(f'|[{self.tape[cell]}]|')
             else:
-                cells.append(f'| {self.tape[i]} |')
+                cells.append(f'| {self.tape[cell]} |')
         return ''.join(cells)
