@@ -49,8 +49,4 @@ source_node,read,write,move,destination_node
 ## Summary
 1. Add your machine definitions into the CSV files.  
 2. Follow the *exact* sample patterns — column order, spelling, and structure.  
-3. Place your machine folders inside `./Machines`.  
-4. The system will load and process every machine automatically.
-
-You can now send the sample file contents so I can match your format precisely.
-`
+3. Place your machine folders inside `./Machines`.
