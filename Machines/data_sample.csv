@@ -1,3 +1,12 @@
-for,STD,SINF,STAY
+STD,SINF,STAY,MDIM,NON
 name,input_string,Σ,Γ
+start_state,final_state,Mahcine_Type
+OFFL
+name,input_string_offline,input_string,Σ,Γ
+start_state,final_state,Mahcine_Type
+MTAPE
+name,input_string_1,Σ1,Γ1,input_string_2,Σ2,Γ2,input_string_n,Σn,Γn
+start_state,final_state,Mahcine_Type
+MTRK
+name,input_string_1,Σ1,Γ1,input_string_2,Σ2,Γ2,input_string_n,Σn,Γn
 start_state,final_state,Mahcine_Type

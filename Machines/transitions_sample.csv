@@ -1,2 +1,8 @@
-for,STD,SINF,STAY
+STD,SINF,STAY,MDIM,NON
 source_node,read,write,move,destination_node
+OFFL
+source_node,read_off_tape,read,write,move_off_tape,move,destination_node
+MTAPE
+source_node,read1,write1,move1,read2,write2,move2,read(n),write(n),move(n),destination_node
+MTRK
+source_node,read1,write1,read2,write2,read(n),write(n),move,destination_node

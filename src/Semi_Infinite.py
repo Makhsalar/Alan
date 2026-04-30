@@ -5,13 +5,13 @@ class Semi_Infinite_Turing(Turing):
         super().__init__(tolerance)
         self.type = 'SINF'
     
-    def apply_move(self, move):
+    def apply_move(self, move, tape_index):
         match move:
             case 'R':
-                self.tape.move_right()
+                self.tape[tape_index].move_right()
             case 'L':
-                if self.tape.position <= 0:
+                if self.tape[tape_index].position <= 0:
                     return
-                return self.tape.move_left()
+                return self.tape[tape_index].move_left()
             case _:
                 return
