@@ -19,7 +19,7 @@ class Turing:
         def __str__(self):
             return self.name
      
-    def __init__(self, speed, tolerance):
+    def __init__(self, tolerance=10000):
         self.name = 'default'
         self.input_string = ''
         self.alphabet = []
@@ -31,8 +31,8 @@ class Turing:
         self.final_state = None
         self.step_counter = 0
         self.tolerance = tolerance
-        self.speed = speed
         self.type = 'STD'
+        self.tape_log = []
 
     def get_machine_type(self):
         with open('data.csv', 'r') as f:
@@ -41,8 +41,8 @@ class Turing:
                 if i == 1:
                     if len(line) > 2 and line[2].strip():
                         self.type = line[2].strip()
-                    else:
-                        self.type = 'STD'
+                        return line[2].strip()
+        return 'STD'
 
     def fetch_data(self):
         with open('data.csv', 'r') as DATA:
@@ -148,28 +148,45 @@ class Turing:
                 break
         if not matched:
             self.halt()
-            
-    def visualize_tape(self, speed=0.7):
-        print(self.tape)
-        sleep(speed)
 
+    def visualize(self):
+        visualize = {'y': True, 'n': False}[input('Do you wish to see the tape? (y/n): ').lower()]
+        if visualize:
+            speed = float(input('Enter Speed Of Visualization Of Tape (Recommended = 0.7s): '))
+            for log in self.tape_log:
+                print(log)
+                sleep(speed)
+            
     def process_input(self):
         if self.input_string:
             checked_nodes = set()
             while (self.current_state != self.final_state) and (self.step_counter < self.tolerance):
                 edges = self.current_state.edges
                 matched = False
-                self.visualize_tape(speed=self.speed)
+                self.tape_log.append(str(self.tape))
                 if self.current_state not in checked_nodes:
                     if self.check_integrity_of_edges(edges):
                         checked_nodes.add(self.current_state)
                         self.apply_transition(edges, matched)
                     else:
                         print(f'Invalid edges on {self.current_state}')
+                        self.visualize()
                         self.halt()
                 else:
                     self.apply_transition(edges, matched)
-            self.halt()  
+            self.visualize()
+            self.halt()
 
+    def run(self):
+        self.fetch_data()
+        self.fetch_transitions()
+        print(self.name)
+        print(f'self Type: {self.type}')
+        print(f'Σ: {self.alphabet}')
+        print(f'Γ: {self.gamma}')
+        self.input_is_valid()
+        print(f'Input: {self.input_string}')
+        self.process_input()
+        
     def __str__(self):
         return self.name

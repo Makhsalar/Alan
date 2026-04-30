@@ -1,8 +1,8 @@
 from src.Standard import Turing
 
 class Semi_Infinite_Turing(Turing):
-    def __init__(self, speed, tolerance):
-        super().__init__(speed, tolerance)
+    def __init__(self, tolerance):
+        super().__init__(tolerance)
         self.type = 'SINF'
     
     def apply_move(self, move):
