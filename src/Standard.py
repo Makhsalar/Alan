@@ -1,5 +1,5 @@
 import csv
-from time import sleep
+from time import sleep, time
 from src.Tape import Tape
 
 class Turing:
@@ -20,7 +20,7 @@ class Turing:
      
     def __init__(self, tolerance=10000, num_tape=1):
         self.name = 'default'
-        self.num_tape = 1
+        self.num_tape = num_tape
         self.step_counter = 0
         self.tolerance = tolerance
         self.allowed_moves = ['R', 'L']
@@ -28,7 +28,6 @@ class Turing:
         self.start_state = self.Node()
         self.final_state = None
         self.type = 'STD'
-        self.num_tape = 1
         self.input_string = {}
         self.alphabet = {}
         self.gamma = {}
@@ -115,6 +114,9 @@ class Turing:
             print('Maximum Limit Of Steps Reached')
         else:
             print(f'Total Steps: {self.step_counter}')
+        if hasattr(self, 'start_time'):
+            end_t = getattr(self, 'end_time', time())
+            print(f'Execution Time: {end_t - self.start_time:.5f} seconds')
         exit()
 
     def input_is_valid(self):
@@ -126,7 +128,6 @@ class Turing:
         return True
 
     def check_integrity_of_edges(self, edges):
-        boolean = []
         for index in range(self.num_tape):
             r = [edge[f'read{index}'] for edge in edges]
             w = [edge[f'write{index}'] for edge in edges]
@@ -143,9 +144,9 @@ class Turing:
                 if item not in self.allowed_moves:
                     print(f'{item} is not available in move set of tape')
                     self.halt()
-            boolean.append(len(r) == len(set(r)))
 
-        return all(boolean)
+        read_combinations = [tuple(edge[f'read{i}'] for i in range(self.num_tape)) for edge in edges]
+        return len(read_combinations) == len(set(read_combinations))
         
     def apply_move(self, move, tape_index):
         match move:
@@ -173,6 +174,8 @@ class Turing:
         self.halt()
 
     def visualize(self):
+        if not hasattr(self, 'end_time'):
+            self.end_time = time()
         visualize = {'y': True, 'n': False}[input('Do you wish to see the tape? (y/n): ').lower()]
         if visualize:
             speed = float(input('Enter Speed Of Visualization Of Tape (Recommended = 0.7s): '))
@@ -204,6 +207,7 @@ class Turing:
         self.halt()
 
     def run(self):
+        self.start_time = time()
         self.fetch_data()
         self.fetch_transitions()
         print(self.name)
