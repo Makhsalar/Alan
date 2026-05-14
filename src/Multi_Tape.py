@@ -5,3 +5,9 @@ class Multi_Tape_Turing(Turing):
         super().__init__(tolerance, num_tape)
         self.type = 'MTAPE'
         self.num_tape = num_tape
+
+class Multi_Tape_Stay_Turing(Multi_Tape_Turing):
+    def __init__(self, tolerance, num_tape):
+        super().__init__(tolerance, num_tape)
+        self.type = 'SMTAPE'
+        self.allowed_moves.append('S')
