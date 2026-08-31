@@ -1,52 +1,146 @@
-# Instructions for Adding Turing Machine Data
+# Alan — Multi-Type Turing Machine Simulator
 
-You must add **your transitions** and **machine data** into the provided `.csv` files.  
-Use the `sample.csv` files as templates — **your data must follow the exact same structure and column patterns**.
+A Python simulator for various Turing machine variants with CSV-based machine definitions.
 
-There are already **two Turing machines** available in the `./Machines` directory.  
-The project will automatically process **all** Turing machines placed in that folder.
+## Features
 
----
+- **6 Machine Types**: Standard, Stay, Semi-Infinite, Multi-Tape, Multi-Tape Stay, Multi-Track
+- **CSV Configuration**: Define machines via simple CSV files
+- **Step Visualization**: Optional tape state visualization per step
+- **Type-Safe**: Full type annotations, passes `pyright` and `ruff`
 
-## File Requirements
+## Machine Types
 
-### 1. Data File (`data.csv`)
-This file stores general machine information.
+| Code     | Type            | Description                                          |
+| -------- | --------------- | ---------------------------------------------------- |
+| `STD`    | Standard        | Classic Turing machine (bidirectional infinite tape) |
+| `STAY`   | Stay            | Standard + `S` (stay) move                           |
+| `SINF`   | Semi-Infinite   | Tape bounded on left (position ≥ 0)                  |
+| `MTAPE`  | Multi-Tape      | Multiple independent tapes                           |
+| `SMTAPE` | Multi-Tape Stay | Multi-tape + `S` move                                |
+| `MTRK`   | Multi-Track     | Single tape, multiple tracks (shared head)           |
 
-#### **Columns (follow sample.csv exactly):**
-- `name` — The machine’s name  
-- `input_string` — The input given to the machine  
-- `a-b` — Machine’s alphabet without blank  
-- `a-b-_` — Machine’s alphabet including blank  
-- `start_state` — Initial state  
-- `final_state` — Accepting/halting state  
+## Installation
 
-**Sample structure:**
-```
-name,input_string,Σ,Γ
-start_state,final_state
-```
-
----
-
-### 2. Transition File (`transition.csv`)
-This file defines the machine’s state transitions.
-
-#### **Columns (follow sample.csv exactly):**
-- `source_node` — Current state  
-- `read` — Symbol read from tape  
-- `write` — Symbol written to tape  
-- `move` — Head direction (`L`, `R`, or `S`)  
-- `destination_node` — Next state  
-
-**Sample structure:**
-```
-source_node,read,write,move,destination_node
+```bash
+Pure Python
 ```
 
----
+## Quick Start
 
-## Summary
-1. Add your machine definitions into the CSV files.  
-2. Follow the *exact* sample patterns — column order, spelling, and structure.  
-3. Place your machine folders inside `./Machines`.
+```bash
+# Run with default machine (data.csv + transitions.csv in project root)
+python main.py
+
+# Or run a specific machine from ./Machines/
+cp Machines/IsEven-SMTAPE/data.csv .
+cp Machines/IsEven-SMTAPE/transitions.csv .
+python main.py
+```
+
+Input prompt:
+
+```
+Enter Maximum Steps of Machine: 10000
+Enter Number of Tapes/Tracks: 2    # Only for MTAPE/SMTAPE/MTRK
+```
+
+## CSV Format
+
+### `data.csv` — Machine Definition
+
+Two-row format:
+
+```csv
+name,input_tape0,input_tape1,...,Σ0,Σ1,...,Γ0,Γ1,...
+start_state,final_state,machine_type
+```
+
+**Example** (`Machines/IsEven-SMTAPE/data.csv`):
+
+```csv
+IsEven,1111,1,1-_,1,1,1-0
+q0,qf,SMTAPE
+```
+
+| Column         | Description                                              |
+| -------------- | -------------------------------------------------------- |
+| `name`         | Machine identifier                                       |
+| `input_tapeN`  | Initial tape content for tape N                          |
+| `ΣN`           | Alphabet (no blank), `-` separated                       |
+| `ΓN`           | Tape alphabet (with blank `_`), `-` separated            |
+| `start_state`  | Initial state name                                       |
+| `final_state`  | Accepting/halt state                                     |
+| `machine_type` | One of: `STD`, `STAY`, `SINF`, `MTAPE`, `SMTAPE`, `MTRK` |
+
+### `transitions.csv` — Transition Table
+
+Format varies by machine type:
+
+**Standard / Stay / Semi-Infinite / Multi-Tape / Multi-Tape Stay:**
+
+```csv
+source,read0,write0,move0,read1,write1,move1,...,destination
+```
+
+**Multi-Track (shared head):**
+
+```csv
+source,read0,write0,read1,write1,...,move,destination
+```
+
+**Example** (`Machines/IsEven-SMTAPE/transitions.csv`):
+
+```csv
+q0,1,1,R,1,0,S,q1
+q0,_,_,S,1,1,S,qf
+q1,1,1,R,0,1,S,q0
+q1,_,_,S,0,0,S,qf
+```
+
+Columns per tape: `read`, `write`, `move` (except MTRK: single `move` at end).
+
+## Project Structure
+
+```
+Alan/
+├── main.py                 # Entry point
+├── data.csv                # Active machine definition
+├── transitions.csv         # Active transition table
+├── src/
+│   ├── Standard.py         # Base Turing machine
+│   ├── Tape.py             # Tape implementation
+│   ├── Stay.py             # Stay variant
+│   ├── Semi_Infinite.py    # Semi-infinite variant
+│   ├── Multi_Tape.py       # Multi-tape variants
+│   └── Multi_Track.py      # Multi-track variant
+└── Machines/               # Pre-built examples
+    ├── aⁿbⁿcⁿ; n≥1-STD/
+    ├── Binary_Addition-STD/
+    ├── Binary_Addition_Multi_Same_len-MTAPE/
+    ├── Factorial-SMTAPE/
+    ├── IsEven-SMTAPE/
+    └── Reverse-SMTAPE/
+```
+
+## Example Machines
+
+| Machine                 | Type   | Description                      |
+| ----------------------- | ------ | -------------------------------- |
+| `aⁿbⁿcⁿ`                | STD    | Accepts equal numbers of a, b, c |
+| `Binary_Addition`       | STD    | Adds two binary numbers          |
+| `Binary_Addition_Multi` | MTAPE  | Multi-tape binary addition       |
+| `Factorial`             | SMTAPE | Computes factorial               |
+| `IsEven`                | SMTAPE | Checks if unary input is even    |
+| `Reverse`               | SMTAPE | Reverses tape content            |
+
+## Notes
+
+- The simulator reads `data.csv` and `transitions.csv` from the **current working directory**
+- To test a machine from `Machines/`, copy its CSV files to the project root
+- `SMTAPE` and `MTRK` require `num_tapes` > 1 at runtime
+- Visualization prompts after execution completes (press `y` + Enter, then enter speed)
+
+## License
+
+MIT
